@@ -3,7 +3,6 @@ from sqlalchemy.engine import URL
 import json
 from pymongo import MongoClient
 
-
 zones_path = "./Controlled_Parking_Zones.geojson"
 spots_path = ""
 bicycle_spots_path = ""
@@ -27,7 +26,7 @@ postgres_engine = create_engine(postgres_url, echo=True)
 # postgres_engine = create_engine(postgres_url)
 postgres = postgres_engine.connect()
 
-# comment the following block out for first run
+# NB comment the following block out for first run
 postgres.execute(text("DROP TABLE parking_spots"))
 postgres.execute(text("DROP TABLE parking_zones"))
 postgres.execute(text("DROP TABLE hours"))
@@ -48,14 +47,3 @@ postgres.execute(text("CREATE TABLE coordinates (id SERIAL PRIMARY KEY, latitude
 postgres.execute(text("CREATE TABLE parking_spots (id SERIAL PRIMARY KEY, vehicle_id INTEGER REFERENCES vehicles NOT NULL, coordinates_id INTEGER REFERENCES coordinates(id) NOT NULL, address VARCHAR(250), parking_zone_id INTEGER REFERENCES parking_zones(id), parking_info VARCHAR(300), bay_type VARCHAR(100), council_bay_identifier VARCHAR(20))"))
 
 postgres.commit()
-
-# # filehandle open to our data
-# testfile = open("./Zones_test.geojson")
-# # testdata = testfile.read()
-# # print(testdata)
-# testdata = json.load(testfile)
-
-# for feature in testdata['features']:
-#     print(feature)
-
-# testfile.close()
