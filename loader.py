@@ -5,6 +5,8 @@ from pymongo import MongoClient
 
 # consider holding the filepaths and collection names  in a hashmap
 
+
+
 zones_path = "./Controlled_Parking_Zones.geojson"
 spots_path = "./Parking_bays.geojson"
 bicycle_spots_path = "./Bicycle_spots.json"
@@ -41,8 +43,8 @@ postgres_url = URL.create(
     host = "localhost",
     database = "parking"
 )
-# swap between the following two lines if you want to see more or less output from the postgres sql commands
 
+# swap between the following two lines if you want to see more or less output from the postgres sql commands
 postgres_engine = create_engine(postgres_url, echo=True)
 #postgres_engine = create_engine(postgres_url)
 postgres = postgres_engine.connect()
@@ -55,17 +57,85 @@ postgres.execute(text("DROP TABLE coordinates"))
 postgres.execute(text("DROP TABLE vehicles"))
 # end block
 
-postgres.execute(text("CREATE TABLE vehicles (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL)"))
+## vehicle table creation
 
-# vehicle types loaded here - add here if we need more
-postgres.execute(
-        text("INSERT INTO vehicles (name) VALUES (:name)"),
-        [{"name": "car"},{"name": "bicyle"}]
+vehicles_table = """
+    CREATE TABLE vehicles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
     )
-postgres.execute(text("CREATE TABLE hours (id SERIAL PRIMARY KEY, start_hours VARCHAR(10), end_hours VARCHAR(10))"))
-postgres.execute(text("CREATE TABLE parking_zones (id SERIAL PRIMARY KEY, council_zone_identifier VARCHAR(10) NOT NULL, price INTEGER, hours_id INTEGER REFERENCES hours(id), description VARCHAR(250), public_spaces INTEGER, permit_spaces INTEGER, off_street_spaces INTEGER )"))
-postgres.execute(text("CREATE TABLE coordinates (id SERIAL PRIMARY KEY, latitude VARCHAR(20), longitude VARCHAR(20), latitude_delta VARCHAR(20), longitude_delta VARCHAR(20))"))
-postgres.execute(text("CREATE TABLE parking_spots (id SERIAL PRIMARY KEY, vehicle_id INTEGER REFERENCES vehicles NOT NULL, coordinates_id INTEGER REFERENCES coordinates(id) NOT NULL, address VARCHAR(250), parking_zone_id INTEGER REFERENCES parking_zones(id), parking_info VARCHAR(300), bay_type VARCHAR(100), council_bay_identifier VARCHAR(20))"))
+"""
+postgres.execute(text(vehicles_table))
+
+## vehicle types loaded here - add here if we need more
+
+vehicle_table_data = [
+    {"name": "car"},
+    {"name": "bike"}
+]
+
+postgres.execute(
+    text("INSERT INTO vehicles (name) VALUES (:name)"),
+    vehicle_table_data
+)
+
+## hours table creation
+
+hours_table = """
+    CREATE TABLE hours (
+    id SERIAL PRIMARY KEY, 
+    start_hours VARCHAR(10),
+    end_hours VARCHAR(10)
+    )
+"""
+postgres.execute(text(hours_table))
+
+## parking zones table creation
+
+parking_zones_table = """
+    CREATE TABLE parking_zones (
+    id SERIAL PRIMARY KEY,
+    council_zone_identifier VARCHAR(10) NOT NULL,
+    price INTEGER,
+    hours_id INTEGER REFERENCES hours(id),
+    description VARCHAR(250),
+    public_spaces INTEGER, 
+    permit_spaces INTEGER,
+    off_street_spaces INTEGER
+    )
+"""
+postgres.execute(text(parking_zones_table))
+
+## coordinates table creation
+
+coordinates_table = """
+    CREATE TABLE coordinates (
+    id SERIAL PRIMARY KEY,
+    latitude VARCHAR(20),
+    longitude VARCHAR(20),
+    latitudeDelta VARCHAR(20),
+    longitudeDelta VARCHAR(20)
+    )
+"""
+postgres.execute(text(coordinates_table))
+
+# parking spots table creation
+
+parking_spots_table = """
+    CREATE TABLE parking_spots (
+        id SERIAL PRIMARY KEY,
+        vehicle_id INTEGER REFERENCES vehicles NOT NULL,
+        coordinates_id INTEGER REFERENCES coordinates(id) NOT NULL,
+        address VARCHAR(250),
+        parking_zone_id INTEGER REFERENCES parking_zones(id),
+        parking_info VARCHAR(300),
+        bay_type VARCHAR(100),
+        council_bay_identifier VARCHAR(20)
+    )
+"""
+postgres.execute(text(parking_spots_table))
+
+## Selected Parking zone Data read in from json
 
 for feature in zones_data['features']:
 
@@ -74,7 +144,7 @@ for feature in zones_data['features']:
             'description' : feature['properties']['Type'],
             'public_spaces' : feature['properties']['no_pub_spa'],
             'permit_spaces' : feature['properties']['no_res_spa'],
-            'off_street_spaces' :feature['properties']['no_osp_spa']
+            'off_street_spaces' : feature['properties']['no_osp_spa']
     }
 
     parking_zone_insert = text("""
@@ -93,6 +163,33 @@ for feature in zones_data['features']:
 """)
     postgres.execute(parking_zone_insert, values)
 
+# ## Selected Parking spots Data read in from json
 
+# for feature in spots_data['features']:
+
+#     values = {
+#             'council_zone_id' : feature['properties']['Zone_No'],
+#             'bay_type' : feature['properties']['Bay_Type'],
+#             'bay_id' : feature['properties']['id']
+#     }
+# # todo need to retrieve correct parking zone id
+
+#     parking_spots_insert = text("""
+#         INSERT INTO parking_spots (
+#             council_zone_identifier, 
+#             bay_type, 
+#             council_bay_identifier 
+# ) 
+#         VALUES (
+#             :council_zone, 
+#             :bay_type, 
+#             :council_bay_identifier )
+# """)
+#     postgres.execute(parking_spots_insert, values)
+
+
+
+
+# committing it all to the relational database
 
 postgres.commit()
