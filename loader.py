@@ -3,16 +3,34 @@ from sqlalchemy.engine import URL
 import json
 from pymongo import MongoClient
 
+# consider holding the filepaths and collection names  in a hashmap
+
 zones_path = "./Controlled_Parking_Zones.geojson"
-spots_path = ""
-bicycle_spots_path = ""
+spots_path = "./Parking_bays.geojson"
+bicycle_spots_path = "./Bicycle_spots.json"
+
 parking_zones = open(zones_path)
+parking_spots = open(spots_path)
+bicycle_spots = open(bicycle_spots_path)
+
 zones_data = json.load(parking_zones)
+spots_data = json.load(parking_spots)
+bicycle_data = json.load(bicycle_spots)
 
 mongo_client = MongoClient('localhost', 27017)
 json_db = mongo_client['raw_parking_data']
+
 collection_zones = json_db['parking_zones']
 collection_zones.insert_one(zones_data)
+parking_zones.close()
+
+collection_spots = json_db['parking_spots']
+collection_spots.insert_one(spots_data)
+parking_spots.close()
+
+collection_bicycle_spots = json_db['bicyle_spots']
+collection_bicycle_spots.insert_one(bicycle_data)
+bicycle_spots.close()
 
 postgres_url = URL.create(
     drivername = "postgresql", 
