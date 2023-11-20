@@ -6,8 +6,9 @@ from tables.vehicles import create_vehicles_table
 from tables.hours import create_hours_table
 from tables.parking_zones import create_parking_zones_table, add_parking_zones_data
 from tables.parking_zone_hours import create_parking_zone_hours_table, insert_parking_zone_hours_data
-from tables.coordinates import create_coordinates_table, insert_polygon_coordinates_data
+from tables.zone_coordinates import create_zone_coordinates_table, insert_polygon_coordinates_data
 from tables.parking_spots import create_parking_spots_table
+from tables.spot_coordinates import create_spot_coordinates_table, input_spot_coordinates_data
 
 zones_path = "./Controlled_Parking_Zones.geojson"
 spots_path = "./Parking_bays.geojson"
@@ -56,7 +57,8 @@ postgres.execute(text("DROP TABLE parking_spots"))
 postgres.execute(text("DROP TABLE parking_zone_hours"))
 postgres.execute(text("DROP TABLE parking_zones"))
 postgres.execute(text("DROP TABLE hours"))
-postgres.execute(text("DROP TABLE coordinates"))
+postgres.execute(text("DROP TABLE zone_coordinates"))
+postgres.execute(text("DROP TABLE spot_coordinates"))
 postgres.execute(text("DROP TABLE vehicles"))
 # end block
 
@@ -68,6 +70,10 @@ create_vehicles_table(postgres)
 
 create_hours_table(postgres)
 
+## parking spot coordinates table creation
+
+create_spot_coordinates_table(postgres)
+
 ## parking zones table creation
 
 create_parking_zones_table(postgres)
@@ -78,9 +84,9 @@ create_parking_zone_hours_table(postgres)
 
 ## coordinates table creation
 
-create_coordinates_table(postgres)
+create_zone_coordinates_table(postgres)
 
-# parking spots table creation
+## parking spots table creation
 
 create_parking_spots_table(postgres)
 
@@ -95,6 +101,10 @@ insert_parking_zone_hours_data(postgres)
 ## entering coordinate data for parking zone polygons
 
 insert_polygon_coordinates_data(postgres, zones_data)
+
+## entering coordinate data for parking spots
+
+input_spot_coordinates_data(postgres, spots_data)
 
 # committing it all to the relational database
 
