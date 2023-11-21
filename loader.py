@@ -9,6 +9,7 @@ from tables.parking_zone_hours import create_parking_zone_hours_table, insert_pa
 from tables.zone_coordinates import create_zone_coordinates_table, insert_polygon_coordinates_data
 from tables.parking_spots import create_parking_spots_table
 from tables.spot_coordinates import create_spot_coordinates_table, input_spot_coordinates_data
+from tables.bicycle_spots import create_bicycle_spots_table, input_bicycle_data
 
 zones_path = "./Controlled_Parking_Zones.geojson"
 spots_path = "./Parking_bays.geojson"
@@ -53,22 +54,23 @@ postgres_engine = create_engine(postgres_url, echo=True)
 postgres = postgres_engine.connect()
 
 # NB comment the following block out for first run
-postgres.execute(text("DROP TABLE parking_spots"))
-postgres.execute(text("DROP TABLE parking_zone_hours"))
-postgres.execute(text("DROP TABLE parking_zones"))
-postgres.execute(text("DROP TABLE hours"))
-postgres.execute(text("DROP TABLE zone_coordinates"))
+# postgres.execute(text("DROP TABLE parking_spots"))
+# postgres.execute(text("DROP TABLE parking_zone_hours"))
+# postgres.execute(text("DROP TABLE parking_zones"))
+# postgres.execute(text("DROP TABLE hours"))
+# postgres.execute(text("DROP TABLE zone_coordinates"))
 # postgres.execute(text("DROP TABLE spot_coordinates"))
-postgres.execute(text("DROP TABLE vehicles"))
+# postgres.execute(text("DROP TABLE vehicles"))
+# postgres.execute(text("DROP TABLE bicycle_spots"))
 # end block
 
 ## vehicle table creation
 
-create_vehicles_table(postgres)
+# create_vehicles_table(postgres)
 
 ## hours table creation
 
-create_hours_table(postgres)
+# create_hours_table(postgres)
 
 ## parking spot coordinates table creation
 
@@ -76,31 +78,31 @@ create_hours_table(postgres)
 
 ## parking zones table creation
 
-create_parking_zones_table(postgres)
+# create_parking_zones_table(postgres)
 
 ## parking zone hours joining table creation
 
-create_parking_zone_hours_table(postgres)
+# create_parking_zone_hours_table(postgres)
 
 ## coordinates table creation
 
-create_zone_coordinates_table(postgres)
+# create_zone_coordinates_table(postgres)
 
 ## parking spots table creation
 
-create_parking_spots_table(postgres)
+# create_parking_spots_table(postgres)
 
 ## Selected Parking zone Data read in from json
 
-add_parking_zones_data(postgres, zones_data)
+# add_parking_zones_data(postgres, zones_data)
 
 ## adding parking zone hours of operation data
 
-insert_parking_zone_hours_data(postgres)
+# insert_parking_zone_hours_data(postgres)
 
 ## entering coordinate data for parking zone polygons
 
-insert_polygon_coordinates_data(postgres, zones_data)
+# insert_polygon_coordinates_data(postgres, zones_data)
 
 ## entering coordinate data for parking spots
 
@@ -110,6 +112,25 @@ insert_polygon_coordinates_data(postgres, zones_data)
 
 # input_spots_data(postgres, spots_data)
 
+## bicycle spots table creation
+
+# create_bicycle_spots_table(postgres)
+
+## insert data into bicycle spots table
+
+# input_bicycle_data(postgres, bicycle_data)
+
 # committing it all to the relational database
 
-postgres.commit()
+
+for feature in zones_data['features']:
+        zone_no = feature['properties']['cacz_ref_n']
+        if zone_no == "7":
+            outer_list = feature['geometry']['coordinates']
+            for inner_list in outer_list:
+                for geo_points_list in inner_list:
+                    print("{"f" latitude: {geo_points_list[1]}, longitude: {geo_points_list[0]} ""},")
+        else:
+            continue
+
+# postgres.commit()
