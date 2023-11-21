@@ -58,7 +58,7 @@ postgres.execute(text("DROP TABLE parking_zone_hours"))
 postgres.execute(text("DROP TABLE parking_zones"))
 postgres.execute(text("DROP TABLE hours"))
 postgres.execute(text("DROP TABLE zone_coordinates"))
-postgres.execute(text("DROP TABLE spot_coordinates"))
+# postgres.execute(text("DROP TABLE spot_coordinates"))
 postgres.execute(text("DROP TABLE vehicles"))
 # end block
 
@@ -72,7 +72,7 @@ create_hours_table(postgres)
 
 ## parking spot coordinates table creation
 
-create_spot_coordinates_table(postgres)
+# create_spot_coordinates_table(postgres)
 
 ## parking zones table creation
 
@@ -104,7 +104,11 @@ insert_polygon_coordinates_data(postgres, zones_data)
 
 ## entering coordinate data for parking spots
 
-input_spot_coordinates_data(postgres, spots_data)
+# input_spot_coordinates_data(postgres, spots_data)
+
+## entering selected data for parking spots
+
+# input_spots_data(postgres, spots_data)
 
 # committing it all to the relational database
 

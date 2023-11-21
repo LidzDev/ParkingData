@@ -18,24 +18,25 @@ def create_parking_spots_table(postgres):
 
 # ## Selected Parking spots Data read in from json
 
-for feature in spots_data['features']:
+# def input_spots_data(postgres, spots_data):
+#     for feature in spots_data['features']:
 
-    values = {
-            'council_zone_id' : feature['properties']['Zone_No'],
-            'bay_type' : feature['properties']['Bay_Type'],
-            'bay_id' : feature['properties']['id']
-    }
-# todo need to retrieve correct parking zone id
+#         values = {
+#                 'council_zone_id' : feature['properties']['Zone_No'],
+#                 'bay_type' : feature['properties']['Bay_Type'],
+#                 'council_bay_identifier' : feature['properties']['id']
+#         }
+#     # todo need to retrieve correct parking zone id
 
-    parking_spots_insert = text("""
-        INSERT INTO parking_spots (
-            council_zone_identifier, 
-            bay_type, 
-            council_bay_identifier 
-) 
-        VALUES (
-            :council_zone_id, 
-            :bay_type, 
-            :council_bay_identifier )
-""")
-    postgres.execute(parking_spots_insert, values)
+#         parking_spots_insert = text("""
+#             INSERT INTO parking_spots (
+#                 council_zone_identifier, 
+#                 bay_type, 
+#                 council_bay_identifier 
+#     ) 
+#             VALUES (
+#                 :council_zone_id, 
+#                 :bay_type, 
+#                 :council_bay_identifier )
+#     """)
+#         postgres.execute(parking_spots_insert, values)
