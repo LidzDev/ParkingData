@@ -46,36 +46,47 @@ def add_parking_zones_data(postgres, zones_data):
 ## BLOCKER - need to work out how to insert the following price data
 def add_price_data(postgres):
     price_data = [
-        {'council_zone_identifier' : '1', 'price' : 390},
-        {'council_zone_identifier' : '1A', 'price' : 670},
-        {'council_zone_identifier' : '2', 'price' : 670},
-        {'council_zone_identifier' : '3', 'price' : 390},
-        {'council_zone_identifier' : '4', 'price' : 390},
-        {'council_zone_identifier' : '5', 'price' : 460},
-        {'council_zone_identifier' : '5A', 'price' : 460},
-        {'council_zone_identifier' : '6', 'price' : 460},
-        {'council_zone_identifier' : '7', 'price' : 390},
-        {'council_zone_identifier' : '8', 'price' : 250},
-        {'council_zone_identifier' : 'N1', 'price' : 250},
-        {'council_zone_identifier' : 'N2', 'price' : 250},
-        {'council_zone_identifier' : 'N3', 'price' : 250},
-        {'council_zone_identifier' : 'N4', 'price' : 250},
-        {'council_zone_identifier' : 'N5', 'price' : 250},
-        {'council_zone_identifier' : 'S1', 'price' : 250},
-        {'council_zone_identifier' : 'S2', 'price' : 250},
-        {'council_zone_identifier' : 'S3', 'price' : 250},
-        {'council_zone_identifier' : 'S4', 'price' : 250}
+        {'council_zone_identifier' : '1', 'price' : 390, 'hours_id' : 1},
+        {'council_zone_identifier' : '1A', 'price' : 670, 'hours_id' : 1},
+        {'council_zone_identifier' : '2', 'price' : 670, 'hours_id' : 1},
+        {'council_zone_identifier' : '3', 'price' : 390, 'hours_id' : 1},
+        {'council_zone_identifier' : '4', 'price' : 390, 'hours_id' : 1},
+        {'council_zone_identifier' : '5', 'price' : 460, 'hours_id' : 2},
+        {'council_zone_identifier' : '5A', 'price' : 460, 'hours_id' : 2},
+        {'council_zone_identifier' : '6', 'price' : 460, 'hours_id' : 2},
+        {'council_zone_identifier' : '7', 'price' : 390, 'hours_id' : 2},
+        {'council_zone_identifier' : '8', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'N1', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'N2', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'N3', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'N4', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'N5', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'S1', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'S2', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'S3', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'S4', 'price' : 250, 'hours_id' : 2},
+        {'council_zone_identifier' : 'B1', 'price' : 0, 'hours_id' : 3},
+        {'council_zone_identifier' : 'B2', 'price' : 0, 'hours_id' : 4},
+        {'council_zone_identifier' : 'B3', 'price' : 0, 'hours_id' : 3},
+        {'council_zone_identifier' : 'B4', 'price' : 0, 'hours_id' : 5},
+        {'council_zone_identifier' : 'B5', 'price' : 0, 'hours_id' : 5},
+        {'council_zone_identifier' : 'B6', 'price' : 0, 'hours_id' : 6},
+        {'council_zone_identifier' : 'B7', 'price' : 0, 'hours_id' : 7},
+        {'council_zone_identifier' : 'B8', 'price' : 0, 'hours_id' : 8},
+        {'council_zone_identifier' : 'B9', 'price' : 0, 'hours_id' : 4},
+        {'council_zone_identifier' : 'B10', 'price' : 0, 'hours_id' : 4}
     ]
 
     for identifier in price_data:
             
             values = {
             'price' : identifier['price'],
-            'council_zone_identifier' : identifier['council_zone_identifier']
+            'council_zone_identifier' : identifier['council_zone_identifier'],
+            'hours_id' : identifier['hours_id']
             }
 
             add_price_data = text("""
-                UPDATE parking_zones SET price = :price 
+                UPDATE parking_zones SET price = :price, hours_id = :hours_id 
                 WHERE council_zone_identifier = :council_zone_identifier
             """)
             postgres.execute(add_price_data, values)

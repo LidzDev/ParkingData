@@ -16,22 +16,6 @@ postgres = postgres_engine.connect()
 # postgres.execute(text("DROP TABLE IF EXISTS hours"))
 
 
-def add_price_data(postgres):
-    
-    for identifier in price_data:
-                
-                values = {
-                'price' : identifier['price'],
-                'council_zone_identifier' : identifier['council_zone_identifier']
-                }
-
-                add_price_data = text("""
-                    UPDATE parking_zones SET price = :price 
-                    WHERE council_zone_identifier = :council_zone_identifier
-                """)
-                postgres.execute(add_price_data, values)
-
-add_price_data(postgres)
 
 postgres.commit()
 
@@ -44,3 +28,20 @@ postgres.commit()
 #                     print("{"f" latitude: {geo_points_list[1]}, longitude: {geo_points_list[0]} ""},")
 #         else:
 #             continue
+
+# def add_price_data(postgres):
+
+#     for identifier in price_data:
+                
+#                 values = {
+#                 'price' : identifier['price'],
+#                 'council_zone_identifier' : identifier['council_zone_identifier']
+#                 }
+
+#                 add_price_data = text("""
+#                     UPDATE parking_zones SET price = :price 
+#                     WHERE council_zone_identifier = :council_zone_identifier
+#                 """)
+#                 postgres.execute(add_price_data, values)
+
+# add_price_data(postgres)
