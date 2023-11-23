@@ -43,7 +43,7 @@ bicycle_spots.close()
 
 postgres_url = URL.create(
     drivername = "postgresql", 
-    username = "darrenlackie",  # change to your own database username
+    username = "user",  # change to your own database username
     host = "localhost",
     database = "parking"
 )
@@ -54,13 +54,13 @@ postgres_engine = create_engine(postgres_url, echo=True)
 postgres = postgres_engine.connect()
 
 # NB comment the following block out for first run
-postgres.execute(text("DROP TABLE parking_spots"))
+postgres.execute(text("DROP TABLE IF EXISTS parking_spots"))
 # postgres.execute(text("DROP TABLE parking_zone_hours"))
-postgres.execute(text("DROP TABLE parking_zones"))
-postgres.execute(text("DROP TABLE hours"))
-postgres.execute(text("DROP TABLE zone_coordinates"))
-postgres.execute(text("DROP TABLE spot_coordinates"))
-postgres.execute(text("DROP TABLE vehicles"))
+postgres.execute(text("DROP TABLE IF EXISTS parking_zones"))
+postgres.execute(text("DROP TABLE IF EXISTS hours"))
+postgres.execute(text("DROP TABLE IF EXISTS zone_coordinates"))
+postgres.execute(text("DROP TABLE IF EXISTS spot_coordinates"))
+postgres.execute(text("DROP TABLE IF EXISTS vehicles"))
 # postgres.execute(text("DROP TABLE bicycle_spots"))
 # end block
 

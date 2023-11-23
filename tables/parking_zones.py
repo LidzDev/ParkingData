@@ -6,7 +6,7 @@ def create_parking_zones_table(postgres):
     id SERIAL PRIMARY KEY,
     council_zone_identifier VARCHAR(10) NOT NULL,
     price INTEGER,
-    hours_id INTEGER REFERENCES hours(id),
+    hours_id INTEGER REFERENCES hours(id) ON DELETE CASCADE,
     description VARCHAR(250),
     public_spaces INTEGER, 
     permit_spaces INTEGER,
