@@ -4,8 +4,7 @@ from sqlalchemy.engine import URL
 from pymongo import MongoClient
 from tables.vehicles import create_vehicles_table
 from tables.hours import create_hours_table
-from tables.parking_zones import create_parking_zones_table, add_parking_zones_data
-# from tables.parking_zone_hours import create_parking_zone_hours_table, insert_parking_zone_hours_data
+from tables.parking_zones import create_parking_zones_table, add_parking_zones_data, add_price_data
 from tables.zone_coordinates import create_zone_coordinates_table, insert_polygon_coordinates_data
 from tables.parking_spots import create_parking_spots_table
 from tables.spot_coordinates import create_spot_coordinates_table, input_spot_coordinates_data
@@ -43,7 +42,7 @@ bicycle_spots.close()
 
 postgres_url = URL.create(
     drivername = "postgresql", 
-    username = "user",  # change to your own database username
+    username = "darrenlackie",  # change to your own database username
     host = "localhost",
     database = "parking"
 )
@@ -53,16 +52,13 @@ postgres_engine = create_engine(postgres_url, echo=True)
 #postgres_engine = create_engine(postgres_url)
 postgres = postgres_engine.connect()
 
-# NB comment the following block out for first run
 postgres.execute(text("DROP TABLE IF EXISTS parking_spots"))
-# postgres.execute(text("DROP TABLE parking_zone_hours"))
 postgres.execute(text("DROP TABLE IF EXISTS parking_zones"))
 postgres.execute(text("DROP TABLE IF EXISTS hours"))
 postgres.execute(text("DROP TABLE IF EXISTS zone_coordinates"))
 postgres.execute(text("DROP TABLE IF EXISTS spot_coordinates"))
 postgres.execute(text("DROP TABLE IF EXISTS vehicles"))
-# postgres.execute(text("DROP TABLE bicycle_spots"))
-# end block
+postgres.execute(text("DROP TABLE IF EXISTS bicycle_spots"))
 
 ## vehicle table creation
 
@@ -80,10 +76,6 @@ create_spot_coordinates_table(postgres)
 
 create_parking_zones_table(postgres)
 
-## parking zone hours joining table creation
-
-# create_parking_zone_hours_table(postgres)
-
 ## coordinates table creation
 
 create_zone_coordinates_table(postgres)
@@ -96,9 +88,9 @@ create_parking_spots_table(postgres)
 
 add_parking_zones_data(postgres, zones_data)
 
-## adding parking zone hours of operation data
+## entering price data for parking zones
 
-# insert_parking_zone_hours_data(postgres)
+add_price_data(postgres)
 
 ## entering coordinate data for parking zone polygons
 
@@ -122,44 +114,4 @@ input_bicycle_data(postgres, bicycle_data)
 
 # committing it all to the relational database
 
-
-# for feature in zones_data['features']:
-#         zone_no = feature['properties']['cacz_ref_n']
-#         if zone_no == "5A":
-#             outer_list = feature['geometry']['coordinates']
-#             for inner_list in outer_list:
-#                 for geo_points_list in inner_list:
-#                     print("{"f" latitude: {geo_points_list[1]}, longitude: {geo_points_list[0]} ""},")
-#         else:
-#             continue
-
 postgres.commit()
-
-
-
-
-# import React from 'react';
-# import { Polygon } from 'react-native-maps';
-
-# const Zone1 = () => {
-#     return (
-#         <Polygon
-#             coordinates={[
-                
-
-# ]}
-# strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
-# strokeColors={[
-#     '#7F0000',
-#     '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
-#     '#B24112',
-#     '#E5845C',
-#     '#238C23',
-#     '#7F0000'
-# ]}
-# strokeWidth={2}
-# />
-# );
-# }
-
-# export default Zone1
