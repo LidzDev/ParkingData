@@ -96,13 +96,13 @@ add_price_data(postgres)
 
 insert_polygon_coordinates_data(postgres, zones_data)
 
-## entering coordinate data for parking spots
-
-input_spot_coordinates_data(postgres, spots_data)
-
 ## entering selected data for parking spots
 
 input_spots_data(postgres, spots_data)
+
+## entering coordinate data for parking spots
+
+input_spot_coordinates_data(postgres, spots_data)
 
 ## bicycle spots table creation
 
