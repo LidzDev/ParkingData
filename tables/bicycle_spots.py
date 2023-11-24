@@ -19,19 +19,39 @@ def input_bicycle_data(postgres, bicycle_data):
         cap = feature['properties'].get('capacity')
         if cap is None:
             cap = "No data"
+        outer_list = feature['geometry']['coordinates']    
+        type = feature['geometry']['type']
+        if type == "LineString":
+            for geo_points_list in outer_list:
+                longitude = geo_points_list[0]
+                latitude = geo_points_list[1]
+        elif type == "Point":
+            longitude = outer_list[0]
+            latitude = outer_list[1]
+        else:
+            for geo_points_list in outer_list:
+                for coordinates in geo_points_list:
+                    longitude = coordinates[0]
+                    latitude = coordinates[1]
 
         values = {
             'council_identifier' : council_identifier,
-            'capacity' : cap 
+            'capacity' : cap,
+            'longitude' : longitude,
+            'latitude' : latitude
         }
 
         insert_into_bicycle_table = text ("""
             INSERT INTO bicycle_spots (
             council_identifier,
-            capacity)
+            capacity,
+            longitude,
+            latitude)
             VALUES (
             :council_identifier,
-            :capacity)
+            :capacity,
+            :longitude,
+            :latitude)
         """)
         postgres.execute(insert_into_bicycle_table, values)
     
