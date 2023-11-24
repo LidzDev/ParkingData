@@ -4,6 +4,7 @@ def create_spot_coordinates_table(postgres):
     spot_coordinates_table = """
         CREATE TABLE spot_coordinates (
         id SERIAL PRIMARY KEY,
+        parking_spots_id INTEGER REFERENCES parking_spots(id),
         latitude VARCHAR(20),
         longitude VARCHAR(20)
         )
