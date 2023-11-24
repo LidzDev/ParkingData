@@ -11,10 +11,10 @@ postgres_url = URL.create(
     database="parking",
 )
 
-zones_path = "./Controlled_Parking_Zones.geojson"
-parking_zones = open(zones_path)
-zones_data = json.load(parking_zones)
-parking_zones.close()
+spots_path = "./Parking_bays.geojson"
+parking_spots = open(spots_path)
+spots_data = json.load(parking_spots)
+parking_spots.close()
 
 postgres_engine = create_engine(postgres_url, echo=True)
 postgres = postgres_engine.connect()
@@ -34,9 +34,10 @@ postgres = postgres_engine.connect()
 #     postgres.execute(text(bicycle_spots_table))
 
 
-def insert_polygon_coordinates_data(postgres, zones_data):
-    for feature in zones_data['features']:
-        zone_no = feature['properties']['cacz_ref_n']
+def input_spot_coordinates_data(postgres, spots_data):
+    for feature in spots_data['features']:
+        council_bay_identifier = feature['properties']['id']
+        print(council_bay_identifier)
         outer_list = feature['geometry']['coordinates']
         type = feature['geometry']['type']
         if type == "MultiPolygon":
@@ -44,65 +45,48 @@ def insert_polygon_coordinates_data(postgres, zones_data):
                 for geo_points_list in inner_list:
                     for coordinates in geo_points_list:
                         longitude = coordinates[0]
-                        latitude = coordinates[1]                      
+                        latitude = coordinates[1]
+                        
+                        values = {
+                        'council_bay_identifier' : council_bay_identifier,
+                        'longitude' : longitude,
+                        'latitude' : latitude,
+                        }
+
+                        spot_coordinates_insert = text("""
+                        INSERT INTO spot_coordinates (
+                            parking_spots_id,
+                            longitude,
+                            latitude)
+                        VALUES (
+                            (SELECT id FROM parking_spots WHERE council_bay_identifier = :council_bay_identifier)
+                            :longitude,
+                            :latitude)
+                        """)
+                        postgres.execute(spot_coordinates_insert, values)
+
         else:
             for inner_list in outer_list:
                 for geo_points_list in inner_list:
-                    longitude = geo_points_list[0]
-                    latitude = geo_points_list[1]
+                    values = {
+                        'council_bay_identifier' : council_bay_identifier,
+                        'longitude' : geo_points_list[0],
+                        'latitude' : geo_points_list[1],
+                    }
 
-insert_polygon_coordinates_data(postgres, zones_data)
+input_spot_coordinates_data(postgres, spots_data)
 
 
 
-
-
-#         values = {
-#             'council_identifier' : council_identifier,
-#             'capacity' : cap,
-#             'longitude' : longitude,
-#             'latitude' : latitude
-#         }
-
-#         insert_into_bicycle_table = text ("""
-#             INSERT INTO bicycle_spots (
-#             council_identifier,
-#             capacity,
-#             longitude,
-#             latitude)
-#             VALUES (
-#             :council_identifier,
-#             :capacity,
-#             :longitude,
-#             :latitude)
-#         """)
-#         postgres.execute(insert_into_bicycle_table, values)
-
-# postgres.commit()
-
-# for feature in zones_data['features']:
-#         zone_no = feature['properties']['cacz_ref_n']
-#         if zone_no == "5A":
-#             outer_list = feature['geometry']['coordinates']
-#             for inner_list in outer_list:
-#                 for geo_points_list in inner_list:
-#                     print("{"f" latitude: {geo_points_list[1]}, longitude: {geo_points_list[0]} ""},")
-#         else:
-#             continue
-
-# def add_price_data(postgres):
-
-#     for identifier in price_data:
-                
-#                 values = {
-#                 'price' : identifier['price'],
-#                 'council_zone_identifier' : identifier['council_zone_identifier']
-#                 }
-
-#                 add_price_data = text("""
-#                     UPDATE parking_zones SET price = :price 
-#                     WHERE council_zone_identifier = :council_zone_identifier
-#                 """)
-#                 postgres.execute(add_price_data, values)
-
-# add_price_data(postgres)
+def set_spot_coordinate_values(postgres, values):
+    spot_coordinates_insert = text("""
+        INSERT INTO spot_coordinates (
+            parking_spots_id,
+            longitude,
+            latitude)
+        VALUES (
+            (SELECT id FROM parking_spots WHERE council_bay_identifier = :council_bay_identifier)
+            :longitude,
+            :latitude)
+        """)
+    postgres.execute(spot_coordinates_insert, values)

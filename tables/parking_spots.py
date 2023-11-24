@@ -7,7 +7,7 @@ def create_parking_spots_table(postgres):
         vehicle_id INTEGER REFERENCES vehicles NOT NULL,
         parking_zone_id INTEGER REFERENCES parking_zones(id),
         bay_type VARCHAR(100),
-        council_bay_identifier VARCHAR(20)
+        council_bay_identifier INTEGER
     )
 """
     postgres.execute(text(parking_spots_table))

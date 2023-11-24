@@ -52,11 +52,11 @@ postgres_engine = create_engine(postgres_url, echo=True)
 #postgres_engine = create_engine(postgres_url)
 postgres = postgres_engine.connect()
 
+postgres.execute(text("DROP TABLE IF EXISTS spot_coordinates"))
 postgres.execute(text("DROP TABLE IF EXISTS parking_spots"))
 postgres.execute(text("DROP TABLE IF EXISTS zone_coordinates"))
 postgres.execute(text("DROP TABLE IF EXISTS parking_zones"))
 postgres.execute(text("DROP TABLE IF EXISTS hours"))
-postgres.execute(text("DROP TABLE IF EXISTS spot_coordinates"))
 postgres.execute(text("DROP TABLE IF EXISTS vehicles"))
 postgres.execute(text("DROP TABLE IF EXISTS bicycle_spots"))
 
