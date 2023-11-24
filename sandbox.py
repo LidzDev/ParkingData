@@ -11,10 +11,10 @@ postgres_url = URL.create(
     database="parking",
 )
 
-bicycle_spots_path = "./Bicycle_spots.json"
-bicycle_spots = open(bicycle_spots_path)
-bicycle_data = json.load(bicycle_spots)
-bicycle_spots.close()
+zones_path = "./Controlled_Parking_Zones.geojson"
+parking_zones = open(zones_path)
+zones_data = json.load(parking_zones)
+parking_zones.close()
 
 postgres_engine = create_engine(postgres_url, echo=True)
 postgres = postgres_engine.connect()
@@ -34,29 +34,24 @@ postgres = postgres_engine.connect()
 #     postgres.execute(text(bicycle_spots_table))
 
 
-def input_bicycle_data(postgres, bicycle_data):
-    for feature in bicycle_data['features']:
-        council_identifier = feature['properties'].get('@id', "No data")
-        cap = feature['properties'].get('capacity')
-        if cap is None:
-            cap = "No data"
-        outer_list = feature['geometry']['coordinates']    
+def insert_polygon_coordinates_data(postgres, zones_data):
+    for feature in zones_data['features']:
+        zone_no = feature['properties']['cacz_ref_n']
+        outer_list = feature['geometry']['coordinates']
         type = feature['geometry']['type']
-        if type == "LineString":
-            for geo_points_list in outer_list:
-                longitude = geo_points_list[0]
-                latitude = geo_points_list[1]
-        elif type == "Point":
-            longitude = outer_list[0]
-            latitude = outer_list[1]
+        if type == "MultiPolygon":
+            for inner_list in outer_list:
+                for geo_points_list in inner_list:
+                    for coordinates in geo_points_list:
+                        longitude = coordinates[0]
+                        latitude = coordinates[1]                      
         else:
-            for geo_points_list in outer_list:
-                for coordinates in geo_points_list:
-                    longitude = coordinates[0]
-                    latitude = coordinates[1]
-        print("long", longitude, "lat", latitude)
+            for inner_list in outer_list:
+                for geo_points_list in inner_list:
+                    longitude = geo_points_list[0]
+                    latitude = geo_points_list[1]
 
-input_bicycle_data(postgres, bicycle_data)
+insert_polygon_coordinates_data(postgres, zones_data)
 
 
 
