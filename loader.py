@@ -6,7 +6,7 @@ from tables.vehicles import create_vehicles_table
 from tables.hours import create_hours_table
 from tables.parking_zones import create_parking_zones_table, add_parking_zones_data, add_price_data
 from tables.zone_coordinates import create_zone_coordinates_table, insert_polygon_coordinates_data
-from tables.parking_spots import create_parking_spots_table
+from tables.parking_spots import create_parking_spots_table, input_spots_data
 from tables.spot_coordinates import create_spot_coordinates_table, input_spot_coordinates_data
 from tables.bicycle_spots import create_bicycle_spots_table, input_bicycle_data
 
@@ -68,21 +68,21 @@ create_vehicles_table(postgres)
 
 create_hours_table(postgres)
 
-## parking spot coordinates table creation
-
-create_spot_coordinates_table(postgres)
-
 ## parking zones table creation
 
 create_parking_zones_table(postgres)
 
-## coordinates table creation
-
-create_zone_coordinates_table(postgres)
-
 ## parking spots table creation
 
 create_parking_spots_table(postgres)
+
+## parking spot coordinates table creation
+
+create_spot_coordinates_table(postgres)
+
+## coordinates table creation
+
+create_zone_coordinates_table(postgres)
 
 ## Selected Parking zone Data read in from json
 
@@ -102,7 +102,7 @@ input_spot_coordinates_data(postgres, spots_data)
 
 ## entering selected data for parking spots
 
-# input_spots_data(postgres, spots_data)
+input_spots_data(postgres, spots_data)
 
 ## bicycle spots table creation
 
