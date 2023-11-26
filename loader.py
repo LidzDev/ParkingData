@@ -42,7 +42,7 @@ bicycle_spots.close()
 
 postgres_url = URL.create(
     drivername = "postgresql", 
-    username = "darrenlackie",  # change to your own database username
+    username = "lydia",  # change to your own database username
     host = "localhost",
     database = "parking"
 )

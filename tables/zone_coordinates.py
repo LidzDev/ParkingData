@@ -6,9 +6,7 @@ def create_zone_coordinates_table(postgres):
     id SERIAL PRIMARY KEY,
     zone_id INTEGER REFERENCES parking_zones(id),
     latitude VARCHAR(20),
-    longitude VARCHAR(20),
-    latitudeDelta VARCHAR(20),
-    longitudeDelta VARCHAR(20)
+    longitude VARCHAR(20)
     )
 """
     postgres.execute(text(zone_coordinates_table))   
