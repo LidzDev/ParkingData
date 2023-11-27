@@ -7,7 +7,9 @@ def create_parking_spots_table(postgres):
         vehicle_id INTEGER REFERENCES vehicles NOT NULL,
         parking_zone_id INTEGER REFERENCES parking_zones(id),
         bay_type VARCHAR(100),
-        council_bay_identifier INTEGER
+        council_bay_identifier INTEGER,
+        default_latitude VARCHAR(20),
+        default_longitude VARCHAR(20)
     )
 """
     postgres.execute(text(parking_spots_table))
@@ -39,3 +41,21 @@ def input_spots_data(postgres, spots_data):
                 :council_bay_identifier)
     """)
         postgres.execute(parking_spots_insert, values)
+
+def insert_representative_coords(postgres, coordinate_data):
+    for coordinate_set in coordinate_data:
+        values = {
+            'parking_spot_id' : coordinate_set[1],
+            'latitude' :coordinate_set[2],
+            'longitude' : coordinate_set[3]
+        }
+        print(values)
+        parking_spots_update = text("""
+            UPDATE parking_spots 
+                SET 
+                    default_latitude = :latitude, 
+                    default_longitude = :longitude 
+                WHERE
+                    id = :parking_spot_id
+        """)
+        postgres.execute(parking_spots_update, values)
