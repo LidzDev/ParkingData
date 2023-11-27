@@ -48,8 +48,8 @@ postgres_url = URL.create(
 )
 
 # swap between the following two lines if you want to see more or less output from the postgres sql commands
-postgres_engine = create_engine(postgres_url, echo=True)
-#postgres_engine = create_engine(postgres_url)
+# postgres_engine = create_engine(postgres_url, echo=True)
+postgres_engine = create_engine(postgres_url)
 postgres = postgres_engine.connect()
 
 postgres.execute(text("DROP TABLE IF EXISTS spot_coordinates"))
@@ -60,58 +60,75 @@ postgres.execute(text("DROP TABLE IF EXISTS hours"))
 postgres.execute(text("DROP TABLE IF EXISTS vehicles"))
 postgres.execute(text("DROP TABLE IF EXISTS bicycle_spots"))
 
+print("Working on loading the data please stand by for the following tasks:")
+
 ## vehicle table creation
 
+print("creating vehicles table")
 create_vehicles_table(postgres)
 
 ## hours table creation
 
+print("creating hours table")
 create_hours_table(postgres)
 
 ## parking zones table creation
 
+print("creating parking zones table")
 create_parking_zones_table(postgres)
 
 ## parking spots table creation
 
+print("creating parking spots table")
 create_parking_spots_table(postgres)
 
 ## parking spot coordinates table creation
 
+print("creating parking coordinates table")
 create_spot_coordinates_table(postgres)
 
-## coordinates table creation
+## zone coordinates table creation
 
+print("creating parking zones table")
 create_zone_coordinates_table(postgres)
 
 ## Selected Parking zone Data read in from json
 
+print("inserting parking zones data")
 add_parking_zones_data(postgres, zones_data)
 
 ## entering price data for parking zones
 
+print("inserting parking zones price data")
 add_price_data(postgres)
 
 ## entering coordinate data for parking zone polygons
 
+print("inserting parking zones coordinates data")
 insert_polygon_coordinates_data(postgres, zones_data)
 
 ## entering selected data for parking spots
 
+print("inserting parking spots data")
 input_spots_data(postgres, spots_data)
 
 ## entering coordinate data for parking spots
 
+print("inserting parking spots coordinates data, this may take a while")
 input_spot_coordinates_data(postgres, spots_data)
 
 ## bicycle spots table creation
 
+print("creating bicycle spots table")
 create_bicycle_spots_table(postgres)
 
 ## insert data into bicycle spots table
 
+print("inserting bicycle spots data")
 input_bicycle_data(postgres, bicycle_data)
 
 # committing it all to the relational database
 
 postgres.commit()
+
+print(f"Loading finished. {chr(10)}Thank you for your patience. {chr(10)}Please run the post_processing.py now.")

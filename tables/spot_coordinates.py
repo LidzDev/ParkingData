@@ -39,7 +39,7 @@ def input_spot_coordinates_data(postgres, spots_data):
                         'longitude' : geo_points_list[0],
                         'latitude' : geo_points_list[1],
                     }
-                    print(council_bay_identifier)
+                    # print(council_bay_identifier)
                     set_spot_coordinate_values(postgres, values)
 
 def set_spot_coordinate_values(postgres, values):

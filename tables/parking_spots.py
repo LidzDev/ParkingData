@@ -14,7 +14,6 @@ def create_parking_spots_table(postgres):
 """
     postgres.execute(text(parking_spots_table))
 
-
 # ## Selected Parking spots Data read in from json
 
 def input_spots_data(postgres, spots_data):
@@ -49,7 +48,7 @@ def insert_representative_coords(postgres, coordinate_data):
             'latitude' :coordinate_set[2],
             'longitude' : coordinate_set[3]
         }
-        print(values)
+        # print(values)
         parking_spots_update = text("""
             UPDATE parking_spots 
                 SET 

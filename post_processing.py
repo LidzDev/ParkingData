@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, text, MetaData, Table
 from sqlalchemy.engine import URL
 from tables.parking_spots import insert_representative_coords
 
+print("Starting post processing the data, please stand by.")
 postgres_url = URL.create(
     drivername = "postgresql", 
     username = "lydia",  # change to your own database username
@@ -29,3 +30,4 @@ result_set = result.fetchall()
 
 insert_representative_coords(postgres, result_set)
 postgres.commit()
+print("Post processing finished.")

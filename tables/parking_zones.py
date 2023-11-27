@@ -43,7 +43,6 @@ def add_parking_zones_data(postgres, zones_data):
             """)
         postgres.execute(parking_zone_insert, values)
 
-## BLOCKER - need to work out how to insert the following price data
 def add_price_data(postgres):
     price_data = [
         {'council_zone_identifier' : '1', 'price' : 390, 'hours_id' : 1},
