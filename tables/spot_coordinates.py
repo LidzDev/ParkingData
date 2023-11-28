@@ -1,4 +1,4 @@
-from sqlalchemy import text
+from sqlalchemy import text, Table
 
 def create_spot_coordinates_table(postgres):
     spot_coordinates_table = """
@@ -55,3 +55,18 @@ def set_spot_coordinate_values(postgres, values):
         """)
     postgres.execute(spot_coordinates_insert, values)
 
+def get_coordinates(postgres, engine, metadata):
+
+    Table(
+        'spot_coordinates',
+        metadata,
+        autoload_with=engine,
+        extend_existing=True
+    )
+
+    query =  text("""
+    SELECT DISTINCT ON (parking_spots_id) * from spot_coordinates ORDER BY parking_spots_id 
+    """)
+    result = postgres.execute(query)
+    result_set = result.fetchall()
+    return result_set

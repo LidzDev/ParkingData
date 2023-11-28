@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine, text, MetaData, Table
 from sqlalchemy.engine import URL
-from tables.parking_spots import insert_representative_coords
+from tables.parking_spots import insert_representative_coords, insert_prices
+from tables.spot_coordinates import get_coordinates
+from tables.parking_zones import get_spot_prices
 
 print("Starting post processing the data, please stand by.")
 postgres_url = URL.create(
@@ -13,21 +15,16 @@ postgres_url = URL.create(
 postgres_engine = create_engine(postgres_url)
 postgres = postgres_engine.connect()
 metadata = MetaData()
-spot_coordinates_table = Table('spot_coordinates', metadata)
 
-Table(
-    'spot_coordinates',
-    metadata,
-    autoload_with=postgres_engine,
-    extend_existing=True
-)
+## getting each parking spot a single pair of coordinates
+print("getting all parking spots a set of coordinates")
+coordinates = get_coordinates(postgres, postgres_engine, metadata)
+insert_representative_coords(postgres, coordinates)
 
-query =  text("""
-SELECT DISTINCT ON (parking_spots_id) * from spot_coordinates ORDER BY parking_spots_id 
-    """)
-result = postgres.execute(query)
-result_set = result.fetchall()
+## getting each parking spot a price
+print("getting all parking spots a price")
+prices = get_spot_prices(postgres, postgres_engine, metadata)
+insert_prices(postgres, prices)
 
-insert_representative_coords(postgres, result_set)
 postgres.commit()
 print("Post processing finished.")

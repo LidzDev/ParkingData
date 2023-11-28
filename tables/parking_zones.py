@@ -1,4 +1,4 @@
-from sqlalchemy import text
+from sqlalchemy import text, Table
 
 def create_parking_zones_table(postgres):
     parking_zones_table = """
@@ -89,4 +89,26 @@ def add_price_data(postgres):
                 WHERE council_zone_identifier = :council_zone_identifier
             """)
             postgres.execute(add_price_data, values)
-    
+
+def get_spot_prices(postgres, engine, metadata):
+
+    Table(
+        'parking_zones',
+        metadata,
+        autoload_with=engine,
+        extend_existing=True
+    )
+    Table(
+        'parking_spots',
+        metadata,
+        autoload_with=engine,
+        extend_existing=True
+    )
+
+    query =  text("""
+    SELECT spots.id, zones.price FROM parking_spots AS spots, parking_zones AS zones WHERE spots.parking_zone_id = zones.id
+    """)
+    result = postgres.execute(query)
+    result_set = result.fetchall()
+    print(result_set)
+    return result_set    
