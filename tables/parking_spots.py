@@ -1,5 +1,6 @@
 from sqlalchemy import text
 
+
 def create_parking_spots_table(postgres):
     parking_spots_table = """
     CREATE TABLE parking_spots (
@@ -9,7 +10,8 @@ def create_parking_spots_table(postgres):
         bay_type VARCHAR(100),
         council_bay_identifier INTEGER,
         default_latitude VARCHAR(20),
-        default_longitude VARCHAR(20)
+        default_longitude VARCHAR(20),
+        price INTEGER
     )
 """
     postgres.execute(text(parking_spots_table))
@@ -58,3 +60,20 @@ def insert_representative_coords(postgres, coordinate_data):
                     id = :parking_spot_id
         """)
         postgres.execute(parking_spots_update, values)
+
+
+def insert_prices(postgres, price_data):
+        for price_set in price_data:
+            values = {
+                'parking_spot_id' : price_set[0],
+                'price' : price_set[1]
+            }
+            print(values)
+            parking_spots_update = text("""
+                UPDATE parking_spots 
+                    SET 
+                        price = :price 
+                    WHERE
+                        id = :parking_spot_id
+            """)
+            postgres.execute(parking_spots_update, values)
