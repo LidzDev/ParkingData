@@ -10,6 +10,14 @@ from tables.parking_spots import create_parking_spots_table, input_spots_data
 from tables.spot_coordinates import create_spot_coordinates_table, input_spot_coordinates_data
 from tables.bicycle_spots import create_bicycle_spots_table, input_bicycle_data
 
+## Change the username below to your own database username
+postgres_url = URL.create(
+    drivername = "postgresql", 
+    username = "Lydia",  # change this value
+    host = "localhost",
+    database = "parking"
+)
+
 zones_path = "./Controlled_Parking_Zones.geojson"
 spots_path = "./Parking_bays.geojson"
 bicycle_spots_path = "./Bicycle_spots.json"
@@ -39,13 +47,6 @@ collection_bicycle_spots = json_db['bicycle_spots']
 collection_bicycle_spots.drop()
 collection_bicycle_spots.insert_one(bicycle_data)
 bicycle_spots.close()
-
-postgres_url = URL.create(
-    drivername = "postgresql", 
-    username = "lydia",  # change to your own database username
-    host = "localhost",
-    database = "parking"
-)
 
 # swap between the following two lines if you want to see more or less output from the postgres sql commands
 # postgres_engine = create_engine(postgres_url, echo=True)

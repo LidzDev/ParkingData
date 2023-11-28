@@ -110,5 +110,5 @@ def get_spot_prices(postgres, engine, metadata):
     """)
     result = postgres.execute(query)
     result_set = result.fetchall()
-    print(result_set)
+    # print(result_set)
     return result_set    

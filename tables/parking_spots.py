@@ -68,7 +68,7 @@ def insert_prices(postgres, price_data):
                 'parking_spot_id' : price_set[0],
                 'price' : price_set[1]
             }
-            print(values)
+            # print(values)
             parking_spots_update = text("""
                 UPDATE parking_spots 
                     SET 

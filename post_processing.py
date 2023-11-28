@@ -5,9 +5,11 @@ from tables.spot_coordinates import get_coordinates
 from tables.parking_zones import get_spot_prices
 
 print("Starting post processing the data, please stand by.")
+
+## Change the username below to your own database username
 postgres_url = URL.create(
     drivername = "postgresql", 
-    username = "lydia",  # change to your own database username
+    username = "Lydia",  # change this value
     host = "localhost",
     database = "parking"
 )
