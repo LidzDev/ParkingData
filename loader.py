@@ -18,9 +18,9 @@ postgres_url = URL.create(
     database = "parking"
 )
 
-zones_path = "./Controlled_Parking_Zones.geojson"
-spots_path = "./Parking_bays.geojson"
-bicycle_spots_path = "./Bicycle_spots.json"
+zones_path = "./jsondata/Controlled_Parking_Zones.geojson"
+spots_path = "./jsondata/Parking_bays.geojson"
+bicycle_spots_path = "./jsondata/Bicycle_spots.json"
 
 parking_zones = open(zones_path)
 parking_spots = open(spots_path)
