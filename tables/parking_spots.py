@@ -11,7 +11,7 @@ def create_parking_spots_table(postgres):
         council_bay_identifier INTEGER,
         default_latitude VARCHAR(20),
         default_longitude VARCHAR(20),
-        price INTEGER
+        price INTEGER DEFAULT 0
     )
 """
     postgres.execute(text(parking_spots_table))
