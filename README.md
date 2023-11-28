@@ -4,7 +4,7 @@
 Python Application to process data from publicly available APIs for use by the SmartPark app.
 
 ## Project Information
-For more information on the overall project please see the [overview](https://github.com/cemmartin/SmartPark/README.md).
+For more information on the overall project please see the [overview](https://github.com/cemmartin/SmartPark).
 
 ## Description
 For the current version of the application we download the data from the Edinburgh City Council and Open Street APIs. As we start processing we save copies of the json in the MongoDB, and then we iterate over the data to generate the relational database. After this has done we run a post processing script to prepare the data for use by the app.
